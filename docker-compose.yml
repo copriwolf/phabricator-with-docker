@@ -1,0 +1,30 @@
+phabricator:
+    image: redpointgames/phabricator
+    ports:
+      - "80:80"
+      - "443:443"
+      - "222:22"
+    privileged: true
+    environment:
+        PHABRICATOR_HOST : "report.com"
+        MYSQL_HOST : mysql
+        MYSQL_USER : "root"
+        MYSQL_PASS : "1234567"
+        MYSQL_PORT : "3306"
+        PHABRICATOR_REPOSITORY_PATH : "/repos"
+    volumes:
+      - ./repos:/repos:rw
+    links:
+      - mysql:mysql
+
+mysql:
+    image: mysql:latest
+    expose:
+      - "3306"
+    privileged: true
+    volumes:
+      - ./conf/my.cnf:/etc/mysql/my.cnf:ro
+      - ./mysql/:/var/lib/mysql/:rw
+      - ./log/mysql/:/var/log/mysql/:rw
+    environment:
+        MYSQL_ROOT_PASSWORD: "1234567"
